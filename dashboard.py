@@ -1,10 +1,6 @@
-item_template = """<div id="item">{}</div>"""
-column_template = """<div id="column">{}</div>"""
+application_template = """<div>{}</div>"""
 html_template = """
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
     <body>{}</body>
 </html>
 """
@@ -21,6 +17,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return html_template.format('<br>'.join(applications))
+    str_apps = (application_template.format(a) for a in applications)
+    return html_template.format(''.join(str_apps))
 
 app.run(port=80, debug=True)
