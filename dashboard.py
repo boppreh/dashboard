@@ -14,9 +14,9 @@ class Application(object):
 
     def __str__(self):
         try:
-            get('http://localhost:' + str(self.port))
+            get('http://localhost:' + str(self.port), timeout=0.001)
             status = 'Online'
-        except exceptions.ConnectionError:
+        except (exceptions.ConnectionError, exceptions.Timeout):
             status = 'Offline'
 
         return application_template.format(self.name, status)
