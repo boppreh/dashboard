@@ -9,15 +9,18 @@ class Application(object):
     def __init__(self, name):
         self.name = name
 
-applications = ["Scheduler Notifier", "Typist", "Watcher Daemon",
-                "Network Status", "J", "Doorman"]
+    def __str__(self):
+        return application_template.format(self.name)
+
+applications = map(Application, ["Scheduler Notifier", "Typist",
+                                 "Watcher Daemon", "Network Status", "J",
+                                 "Doorman"])
 
 from flask import Flask
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    str_apps = (application_template.format(a) for a in applications)
-    return html_template.format(''.join(str_apps))
+    return html_template.format(''.join(map(str, applications)))
 
 app.run(port=80, debug=True)
