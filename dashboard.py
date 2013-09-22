@@ -1,20 +1,33 @@
-application_template = """<div>{}</div>"""
+application_template = """<div>{} [{}]</div>"""
 html_template = """
 <html>
     <body>{}</body>
 </html>
 """
 
+from requests import get, exceptions
+
 class Application(object):
-    def __init__(self, name):
+    def __init__(self, name, port):
         self.name = name
+        self.port = port
 
     def __str__(self):
-        return application_template.format(self.name)
+        try:
+            get('http://localhost:' + str(self.port))
+            status = 'Online'
+        except exceptions.ConnectionError:
+            status = 'Offline'
 
-applications = map(Application, ["Scheduler Notifier", "Typist",
-                                 "Watcher Daemon", "Network Status", "J",
-                                 "Doorman"])
+        return application_template.format(self.name, status)
+
+applications = [Application('Scheduler Notifier', 2340),
+                Application('Typist', 2341),
+                Application('Watcher Daemon', 2342),
+                Application('Network Status', 2343),
+                Application('J', 2344),
+                Application('Doorman', 2345),
+               ]
 
 from flask import Flask
 app = Flask(__name__)
