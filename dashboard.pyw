@@ -29,11 +29,16 @@ applications = [Application('Scheduler Notifier', 2340),
                 Application('Doorman', 2345),
                ]
 
-from flask import Flask
-app = Flask(__name__)
+if __name__ == '__main__':
+    print 'a'
+    from background import tray
+    tray('Dashboard', 'status.png')
 
-@app.route("/")
-def index():
-    return html_template.format(''.join(map(str, applications)))
+    from flask import Flask
+    app = Flask(__name__)
 
-app.run(port=80, debug=True)
+    @app.route("/")
+    def index():
+        return html_template.format(''.join(map(str, applications)))
+
+    app.run(port=80)
