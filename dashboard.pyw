@@ -27,12 +27,15 @@ applications = [Application('Scheduler Notifier', 2340),
                 Application('Network Status', 2343),
                 Application('J', 2344),
                 Application('Doorman', 2345),
+                Application('Calculator', 2346),
                ]
 
 if __name__ == '__main__':
     print 'a'
     from background import tray
-    tray('Dashboard', 'status.png')
+    import webbrowser
+    tray('Dashboard', 'status.png',
+         on_click=lambda: webbrowser.open('http://localhost:80'))
 
     from flask import Flask
     app = Flask(__name__)
