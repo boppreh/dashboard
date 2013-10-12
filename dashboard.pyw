@@ -1,4 +1,4 @@
-application_template = """<div>{} [{}]</div>"""
+application_template = """<div>{}: {}</div>"""
 html_template = """
 <html>
     <body>{}</body>
@@ -14,12 +14,12 @@ class Application(object):
 
     def __str__(self):
         try:
-            get('http://localhost:' + str(self.port), timeout=0.001)
-            status = 'Online'
+            url = 'http://localhost:' + str(self.port)
+            value = get(url, timeout=0.001).content
         except (exceptions.ConnectionError, exceptions.Timeout):
-            status = 'Offline'
+            value = '[Offline]'
 
-        return application_template.format(self.name, status)
+        return application_template.format(self.name, value)
 
 applications = [Application('Scheduler Notifier', 2340),
                 Application('Typist', 2341),
