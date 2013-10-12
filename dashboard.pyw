@@ -31,7 +31,6 @@ applications = [Application('Scheduler Notifier', 2340),
                ]
 
 if __name__ == '__main__':
-    print 'a'
     from background import tray
     import webbrowser
     tray('Dashboard', 'status.png',
