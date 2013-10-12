@@ -1,4 +1,4 @@
-application_template = """<div>{}: {}</div>"""
+application_template = """<div><b>{}</b>: {}</div>"""
 html_template = """
 <html>
     <body>{}</body>
@@ -42,6 +42,6 @@ if __name__ == '__main__':
 
     @app.route("/")
     def index():
-        return html_template.format(''.join(map(str, applications)))
+        return html_template.format('<br>'.join(map(str, applications)))
 
     app.run(port=80)
