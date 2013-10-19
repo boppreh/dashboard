@@ -1,11 +1,11 @@
+from requests import get, exceptions
+
 application_template = """<div><b>{}</b>: {}</div>"""
 html_template = """
 <html>
     <body>{}</body>
 </html>
 """
-
-from requests import get, exceptions
 
 class Application(object):
     def __init__(self, name, port):
