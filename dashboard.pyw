@@ -15,11 +15,11 @@ class Application(object):
     def __str__(self):
         try:
             url = 'http://localhost:' + str(self.port)
-            value = get(url, timeout=0.001).content
+            value = get(url, timeout=0.001).text
         except (exceptions.ConnectionError, exceptions.Timeout):
             value = '[Offline]'
 
-        return application_template.format(self.name, value)
+        return application_template.format(self.name, value.encode('utf-8'))
 
 applications = [Application('Scheduler Notifier', 2340),
                 Application('Typist', 2341),
