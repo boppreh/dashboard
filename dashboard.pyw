@@ -44,4 +44,4 @@ if __name__ == '__main__':
     def index():
         return html_template.format('<br>'.join(map(str, applications)))
 
-    app.run(port=80)
+    app.run(port=80, debug=True, use_reloader=False)
