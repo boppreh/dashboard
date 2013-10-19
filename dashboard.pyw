@@ -28,6 +28,7 @@ applications = [Application('Scheduler Notifier', 2340),
                 Application('J', 2344),
                 Application('Doorman', 2345),
                 Application('Calculator', 2346),
+                Application('Git Status', 2347),
                ]
 
 if __name__ == '__main__':
