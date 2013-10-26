@@ -19,7 +19,7 @@ class Application(object):
         except (exceptions.ConnectionError, exceptions.Timeout):
             value = '[Offline]'
 
-        return application_template.format(self.name, value.encode('utf-8'))
+        return application_template.format(self.name, value)
 
 applications = [Application('Scheduler Notifier', 2340),
                 Application('Typist', 2341),
@@ -32,10 +32,10 @@ applications = [Application('Scheduler Notifier', 2340),
                ]
 
 if __name__ == '__main__':
-    from background import tray
+    from tray import tray
     import webbrowser
     tray('Dashboard', 'status.png',
-         on_click=lambda: webbrowser.open('http://localhost:80'))
+         on_click=lambda: webbrowser.open('http://localhost:4000'))
 
     from flask import Flask
     app = Flask(__name__)
@@ -44,4 +44,4 @@ if __name__ == '__main__':
     def index():
         return html_template.format('<br>'.join(map(str, applications)))
 
-    app.run(port=80, debug=True, use_reloader=False)
+    app.run(port=4000, debug=True, use_reloader=False)
