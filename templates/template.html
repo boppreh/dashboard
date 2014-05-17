@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Dashboard</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	</head>
+
+	<body>
+        <style>
+        .project {
+            margin: 0px;
+            text-indent: 0px;
+            list-style-type: none;
+
+            display: block;
+            width: 16.66%;
+            float: left;
+        }
+
+        .icon {
+            margin-bottom: -0.20em;
+        }
+        </style>
+
+        <div>
+            <h1>Projects</h1>
+            <ul>
+                {% for project in projects %}
+                    <li class="project">
+                    <img width=16 height=16 src="{{project['icon']}}" title="{{project['language']}}">
+                    <a href="https://github.com/boppreh/{{project['name']}}">{{project['name']}}</a>
+                    {% if project['package'] %}
+                    <a href="https://pypi.python.org/pypi/{{project['name']}}"> {{project['package'].version}}</a>
+                    {% endif %}
+                    {% for icon, text in project['problems'].items() %}<img class="icon" src="{{icon}}" title="{{text}}">{% endfor %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+	</body>
+</html>

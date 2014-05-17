@@ -1,47 +1,54 @@
-from requests import get, exceptions
+import sys
+sys.path.append('../workspace')
 
-application_template = """<div><b>{}</b>: {}</div>"""
-html_template = """
-<html>
-    <body>{}</body>
-</html>
-"""
+from collections import defaultdict
+from workspace import Workspace
+import flask
 
-class Application(object):
-    def __init__(self, name, port):
-        self.name = name
-        self.port = port
+app = flask.Flask(__name__, static_folder='static', static_url_path='')
 
-    def __str__(self):
-        try:
-            url = 'http://localhost:' + str(self.port)
-            value = get(url, timeout=0.001).text
-        except (exceptions.ConnectionError, exceptions.Timeout):
-            value = '[Offline]'
+workspace = Workspace(r'E:\projects', r'E:\projects\go\src\github.com\boppreh')
+workspace.problems
 
-        return application_template.format(self.name, value)
+def map_problems(project):
+    icons = {
+        'uncommited changes': 'pencil.png',
+        'commits to push': 'plug.png',
+        'commits to pull': 'plug.png',
+        'using HTTPS to sync': 'globe.png',
+        'no CHANGES.txt': 'report.png',
+        'no README.txt': 'report.png',
+        'commits to publish': 'box.png',
+    }
 
-applications = [Application('Scheduler Notifier', 2340),
-                Application('Typist', 2341),
-                Application('Watcher Daemon', 2342),
-                Application('Network Status', 2343),
-                Application('J', 2344),
-                Application('Doorman', 2345),
-                Application('Calculator', 2346),
-                Application('Git Status', 2347),
-               ]
+    problems = defaultdict(list)
+    for problem in project.problems:
+        for description, icon in icons.items():
+            if description in problem:
+                problems[icon].append(problem)
 
-if __name__ == '__main__':
-    from tray import tray
-    import webbrowser
-    tray('Dashboard', 'status.png',
-         on_click=lambda: webbrowser.open('http://localhost:4000'))
+    return {icon: '\n'.join(problem) for icon, problem in problems.items()}
 
-    from flask import Flask
-    app = Flask(__name__)
+def get_icon(project):
+    icons = defaultdict(lambda: 'question.png', {
+        'python': 'python.gif',
+        'javascript': 'javascript.gif',
+        'go': 'go.ico',
+    })
 
-    @app.route("/")
-    def index():
-        return html_template.format('<br>'.join(map(str, applications)))
+    return icons[project.language.lower()]
 
-    app.run(port=4000, debug=True, use_reloader=False)
+
+@app.route("/")
+def index():
+    projects = sorted(({'name': project.name,
+                       'package': project.package,
+                       'problems': map_problems(project),
+                       'icon': get_icon(project),
+                       'language': project.language,
+                       } for project in workspace), key=lambda p: p['name'])
+
+    return flask.render_template('template.html',
+                                 projects=projects)
+
+app.run(port=80, debug=True, use_reloader=False)
