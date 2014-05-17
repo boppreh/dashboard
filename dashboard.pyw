@@ -7,7 +7,7 @@ import flask
 
 app = flask.Flask(__name__, static_folder='static', static_url_path='')
 
-workspace = Workspace(r'E:\projects', r'E:\projects\go\src\github.com\boppreh')
+workspace = Workspace(r'..\\', r'..\go\src\github.com\boppreh')
 workspace.problems
 
 def map_problems(project):
