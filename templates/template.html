@@ -8,6 +8,11 @@
 
 	<body>
         <style>
+        #projects {
+            position: absolute;
+            bottom: 15px;
+        }
+
         .project {
             margin: 0px;
             text-indent: 0px;
@@ -21,9 +26,23 @@
         .icon {
             margin-bottom: -0.20em;
         }
+
+        #clock {
+            float: right;
+        }
         </style>
 
-        <div>
+        <div id="clock">
+            <object type="application/x-shockwave-flash" data="clock.swf" 
+                width="200" height="200"> 
+
+                <param name="movie" value="clock.swf" />
+                <param name="quality" value="high" />
+                <param name="wmode" value="transparent" />
+            </object>
+        </div>
+
+        <div id="projects">
             <h1>Projects</h1>
             <ul>
                 {% for project in projects %}
