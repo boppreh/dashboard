@@ -1,9 +1,46 @@
 import sys
 sys.path.append('../workspace')
 
+
 from collections import defaultdict
 from workspace import Workspace
 import flask
+
+import win32clipboard, win32con
+import os
+import random
+import string
+
+def random_name(n=8):
+    return ''.join(random.choice(string.ascii_letters + string.digits)
+                   for i in range(n))
+
+def upload_clipboard():
+    #win32con.CF_TEXT
+    #win32con.CF_HDROP
+
+    win32clipboard.OpenClipboard()
+    try:
+        if win32clipboard.IsClipboardFormatAvailable(win32con.CF_TEXT):
+            path = random_name() + '.txt'
+            with open(path, 'wb') as f:
+                f.write(win32clipboard.GetClipboardData(win32con.CF_TEXT))
+
+        scp_fmt = 'scp "{}" lucasboppre@marte.inf.ufsc.br:public_html'
+        os.system(scp_fmt.format(path))
+    finally:
+        win32clipboard.CloseClipboard()
+        
+    win32clipboard.OpenClipboard()
+    try:
+        link = 'https://inf.ufsc.br/~lucasboppre/' + path
+        win32clipboard.EmptyClipboard()
+        win32clipboard.SetClipboardData(win32con.CF_TEXT, link.encode('utf-8'))
+    finally:
+        win32clipboard.CloseClipboard()
+
+upload_clipboard()
+exit()
 
 app = flask.Flask(__name__, static_folder='static', static_url_path='')
 
