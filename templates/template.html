@@ -34,12 +34,15 @@
         }
 
         #upload {
+            position: absolute;
+            top: 20%;
+            left: 40%;
         }
         </style>
 
         <div id="upload">
-            <button onclick="upload()">Upload clipboard</button>
-            <div id="upload_result" />
+            <button onclick="upload()">Upload<br>clipboard</button>
+            <div id="upload_result" ></div>
             <script>
 function upload() {
     var resultElement = document.getElementById("upload_result");
