@@ -76,9 +76,6 @@ def upload_clipboard():
     finally:
         win32clipboard.CloseClipboard()
 
-upload_clipboard()
-exit()
-
 app = flask.Flask(__name__, static_folder='static', static_url_path='')
 
 workspace = Workspace(r'..\\', r'..\go\src\github.com\boppreh')
@@ -126,7 +123,11 @@ def index():
                                  projects=projects)
 
 @app.route("/upload_clipboard", methods=['POST'])
-def upload():
-    upload_clipboard()
+def upload_service():
+    try:
+        upload_clipboard()
+        return ""
+    except Exception as e:
+        return e
 
 app.run(port=80, debug=True, use_reloader=False)

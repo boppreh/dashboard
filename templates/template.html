@@ -28,9 +28,33 @@
         }
 
         #clock {
-            float: right;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+
+        #upload {
         }
         </style>
+
+        <div id="upload">
+            <button onclick="upload()">Upload clipboard</button>
+            <div id="upload_result" />
+            <script>
+function upload() {
+    var resultElement = document.getElementById("upload_result");
+    resultElement.innerHTML = 'Sending...'
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            resultElement.innerHTML = xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("POST", "/upload_clipboard", true);
+    xmlhttp.send()
+}
+            </script>
+        </div>
 
         <div id="clock">
             <object type="application/x-shockwave-flash" data="clock.swf" 
