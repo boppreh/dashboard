@@ -34,9 +34,10 @@ def zip_folder(folder_path, zip_path):
 
 def upload_clipboard():
     win32clipboard.OpenClipboard()
+
     try:
         if win32clipboard.IsClipboardFormatAvailable(win32con.CF_TEXT):
-            path = random_name() + '.txt'
+            path = 'files/' + random_name() + '.txt'
             with open(path, 'wb') as f:
                 f.write(win32clipboard.GetClipboardData(win32con.CF_TEXT))
             new_value = upload(path)
@@ -59,7 +60,15 @@ def upload_clipboard():
 
     finally:
         win32clipboard.CloseClipboard()
-        
+    
+    if win32clipboard.IsClipboardFormatAvailable(win32clipboard.CF_DIB):
+        path = 'files/' + random_name() + '.png'
+        from PIL import ImageGrab
+        image = ImageGrab.grabclipboard()
+        image.save(path,'PNG')
+        new_value = upload(path)
+        os.remove(path)
+
     win32clipboard.OpenClipboard()
     try:
         win32clipboard.EmptyClipboard()
@@ -115,5 +124,9 @@ def index():
 
     return flask.render_template('template.html',
                                  projects=projects)
+
+@app.route("/upload_clipboard", methods=['POST'])
+def upload():
+    upload_clipboard()
 
 app.run(port=80, debug=True, use_reloader=False)
