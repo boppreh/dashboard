@@ -18,9 +18,7 @@ def random_name(n=8):
                    for i in range(n))
 
 def upload(path):
-    print(path)
-    scp_fmt = 'scp "{}" lucasboppre@marte.inf.ufsc.br:public_html'
-    print(scp_fmt.format(path))
+    scp_fmt = 'scp -i %USERPROFILE%/.ssh/id_rsa "{}" lucasboppre@marte.inf.ufsc.br:public_html'
     os.system(scp_fmt.format(path))
     return 'https://inf.ufsc.br/~lucasboppre/' + os.path.basename(path)
 
@@ -121,6 +119,23 @@ def index():
 
     return flask.render_template('template.html',
                                  projects=projects)
+
+@app.route('/<project_name>/activate', methods=['POST'])
+def show_post(project_name):
+    try:
+        new_location = str(workspace[project_name].path.absolute())
+        print(new_location) 
+
+        from win32com.shell import shell, shellcon
+        from os import path
+
+        shell.SHSetFolderPath(shellcon.CSIDL_DESKTOP, new_location, 0)
+        shell.SHChangeNotify(shellcon.SHCNE_ASSOCCHANGED,
+                             shellcon.SHCNF_IDLIST,
+                             [], [])
+        return ""
+    except Exception as e:
+        return e
 
 @app.route("/upload_clipboard", methods=['POST'])
 def upload_service():

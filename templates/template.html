@@ -71,10 +71,28 @@ function upload() {
 
         <div id="projects">
             <h1>Projects</h1>
+
+            <script>
+function activateProject(projectName) {
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            resultElement.innerHTML = xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("POST", "/" + projectName + "/activate", true);
+    xmlhttp.send()
+}
+            </script>
+
             <ul>
                 {% for project in projects %}
                     <li class="project">
-                    <img width=16 height=16 src="{{project['icon']}}" title="{{project['language']}}">
+                    <img width=16 height=16 src="{{project['icon']}}"
+                    title="{{project['language']}}"
+                    style="cursor: pointer"
+                    onclick="activateProject('{{ project['name'] }}')">
+
                     <a href="https://github.com/boppreh/{{project['name']}}">{{project['name']}}</a>
                     {% if project['package'] %}
                     <a href="https://pypi.python.org/pypi/{{project['name']}}"> {{project['package'].version}}</a>
