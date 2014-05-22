@@ -115,34 +115,24 @@ def index():
                        'problems': map_problems(project),
                        'icon': get_icon(project),
                        'language': project.language,
+                       'active': project.active,
                        } for project in workspace), key=lambda p: p['name'])
 
     return flask.render_template('template.html',
                                  projects=projects)
 
 @app.route('/<project_name>/activate', methods=['POST'])
-def show_post(project_name):
-    try:
-        new_location = str(workspace[project_name].path.absolute())
-        print(new_location) 
-
-        from win32com.shell import shell, shellcon
-        from os import path
-
-        shell.SHSetFolderPath(shellcon.CSIDL_DESKTOP, new_location, 0)
-        shell.SHChangeNotify(shellcon.SHCNE_ASSOCCHANGED,
-                             shellcon.SHCNF_IDLIST,
-                             [], [])
-        return ""
-    except Exception as e:
-        return e
+def activate_project(project_name):
+    project = workspace[project_name]
+    if project.active:
+        project.deactivate()
+    else:
+        project.activate()
+    return ""
 
 @app.route("/upload_clipboard", methods=['POST'])
 def upload_service():
-    try:
-        upload_clipboard()
-        return ""
-    except Exception as e:
-        return e
+    upload_clipboard()
+    return ""
 
 app.run(port=80, debug=True, use_reloader=False)

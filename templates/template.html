@@ -27,6 +27,11 @@
             margin-bottom: -0.20em;
         }
 
+        .active-icon {
+            border-radius: 100%;
+            box-shadow: 0 0 8px 4px #00FF00;
+        }
+
         #clock {
             position: absolute;
             right: 15px;
@@ -81,14 +86,24 @@ function activateProject(projectName) {
         }
     }
     xmlhttp.open("POST", "/" + projectName + "/activate", true);
-    xmlhttp.send()
+    xmlhttp.send();
+
+    var oldActive = document.getElementsByClassName("active-icon")[0],
+        newActive = document.getElementById(projectName).children[0];
+
+    // Check if the action was a deactivation by toggle.
+    if (oldActive != newActive) {
+        newActive.className = "active-icon";
+    }
+    oldActive.className = "";
 }
             </script>
 
             <ul>
                 {% for project in projects %}
-                    <li class="project">
+                    <li class="project" id="{{project['name']}}">
                     <img width=16 height=16 src="{{project['icon']}}"
+                    {% if project['active'] %}class="active-icon"{% endif %}
                     title="{{project['language']}}"
                     style="cursor: pointer"
                     onclick="activateProject('{{ project['name'] }}')">
