@@ -43,6 +43,12 @@
             top: 20%;
             left: 40%;
         }
+
+        #transfer {
+            position: absolute;
+            top: 20%;
+            left: 30%;
+        }
         </style>
 
         <script>
@@ -57,6 +63,19 @@ function post(url, callback) {
     xmlhttp.send()
 }
         </script>
+
+        <div id="transfer">
+            <button onclick="transfer()">Transfer<br>clipboard</button>
+            <div id="transfer_result" ></div>
+            <script>
+function transfer() {
+    var resultElement = document.getElementById("transfer_result");
+    resultElement.innerHTML = 'Sending...'
+    post('/transfer_clipboard',
+         function(response) { resultElement.innerHTML = response; });
+}
+            </script>
+        </div>
 
         <div id="upload">
             <button onclick="upload()">Upload<br>clipboard</button>

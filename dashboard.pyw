@@ -1,17 +1,18 @@
 import flask
 from modules.upload_clipboard import upload_clipboard
+from modules.transfer_clipboard import transfer_clipboard
 from modules.workspace import load_workspace, map_problems, get_icon
-
-workspace = load_workspace()
-
 
 app = flask.Flask(__name__, static_folder='static', static_url_path='')
 
-@app.route("/")
+workspace = load_workspace()
+
+@app.route('/')
 def index():
     projects = sorted(({'name': project.name,
                        'package': project.package,
-                       'problems': map_problems(project),
+                       #'problems': map_problems(project),
+                       'problems': {},
                        'icon': get_icon(project),
                        'language': project.language,
                        'active': project.active,
@@ -28,11 +29,16 @@ def activate_project(project_name):
         project.deactivate()
     else:
         project.activate()
-    return ""
+    return ''
 
-@app.route("/upload_clipboard", methods=['POST'])
+@app.route('/upload_clipboard', methods=['POST'])
 def upload_service():
     upload_clipboard()
-    return ""
+    return ''
+
+@app.route('/transfer_clipboard', methods=['POST'])
+def transfer_service():
+    transfer_clipboard()
+    return ''
 
 app.run(port=80, debug=True, use_reloader=False)
