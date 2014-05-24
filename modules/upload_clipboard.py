@@ -1,9 +1,9 @@
-import win32clipboard, win32con
 import os
 import shutil
 import random
 import string
 import zipfile
+import modules.clipboard as clipboard
 
 def random_name(n=8):
     return ''.join(random.choice(string.ascii_letters + string.digits)
@@ -23,45 +23,32 @@ def zip_folder(folder_path, zip_path):
           zip.write(fn, fn[rootlen:])
 
 def upload_clipboard():
-    win32clipboard.OpenClipboard()
-
-    try:
-        if win32clipboard.IsClipboardFormatAvailable(win32con.CF_TEXT):
-            path = 'files/' + random_name() + '.txt'
-            with open(path, 'wb') as f:
-                f.write(win32clipboard.GetClipboardData(win32con.CF_TEXT))
-            new_value = upload(path)
-            os.remove(path)
-
-        elif win32clipboard.IsClipboardFormatAvailable(win32con.CF_HDROP):
-            values_list = []
-            for path in win32clipboard.GetClipboardData(win32con.CF_HDROP):
-                local_file = 'files/' + os.path.basename(path)
-
-                if os.path.isdir(path):
-                    local_file += '.zip'
-                    zip_folder(path, local_file)
-                else:
-                    shutil.copy(path, local_file)
-
-                values_list.append(upload(local_file))
-                os.remove(local_file)
-            new_value = '\n'.join(values_list)
-
-    finally:
-        win32clipboard.CloseClipboard()
-    
-    if win32clipboard.IsClipboardFormatAvailable(win32clipboard.CF_DIB):
-        path = 'files/' + random_name() + '.png'
-        from PIL import ImageGrab
-        image = ImageGrab.grabclipboard()
-        image.save(path,'PNG')
+    if clipboard.get_text():
+        path = 'files/' + random_name() + '.txt'
+        with open(path, 'wb') as f:
+            f.write(clipboard.get_text())
         new_value = upload(path)
         os.remove(path)
 
-    win32clipboard.OpenClipboard()
-    try:
-        win32clipboard.EmptyClipboard()
-        win32clipboard.SetClipboardData(win32con.CF_UNICODETEXT, new_value)
-    finally:
-        win32clipboard.CloseClipboard()
+    elif clipboard.get_files():
+        values_list = []
+        for path in clipboard.get_files():
+            local_file = 'files/' + os.path.basename(path)
+
+            if os.path.isdir(path):
+                local_file += '.zip'
+                zip_folder(path, local_file)
+            else:
+                shutil.copy(path, local_file)
+
+            values_list.append(upload(local_file))
+            os.remove(local_file)
+        new_value = '\n'.join(values_list)
+
+    elif clipboard.get_bmp():
+        path = 'files/' + random_name() + '.png'
+        clipboard.get_bmp().save(path, 'PNG')
+        new_value = upload(path)
+        os.remove(path)
+
+    clipboard.set_text(new_value)
