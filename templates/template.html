@@ -45,6 +45,19 @@
         }
         </style>
 
+        <script>
+function post(url, callback) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (callback && xmlhttp.readyState == XMLHttpRequest.DONE) {
+            callback(xmlhttp.responseText);
+        }
+    }
+    xmlhttp.open("POST", url, true);
+    xmlhttp.send()
+}
+        </script>
+
         <div id="upload">
             <button onclick="upload()">Upload<br>clipboard</button>
             <div id="upload_result" ></div>
@@ -52,14 +65,8 @@
 function upload() {
     var resultElement = document.getElementById("upload_result");
     resultElement.innerHTML = 'Sending...'
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            resultElement.innerHTML = xmlhttp.responseText;
-        }
-    }
-    xmlhttp.open("POST", "/upload_clipboard", true);
-    xmlhttp.send()
+    post('/upload_clipboard',
+         function(response) { resultElement.innerHTML = response; });
 }
             </script>
         </div>
@@ -79,14 +86,7 @@ function upload() {
 
             <script>
 function activateProject(projectName) {
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            resultElement.innerHTML = xmlhttp.responseText;
-        }
-    }
-    xmlhttp.open("POST", "/" + projectName + "/activate", true);
-    xmlhttp.send();
+    post('/' + projectName + '/activate');
 
     var oldActive = document.getElementsByClassName("active-icon")[0],
         newActive = document.getElementById(projectName).children[0];
