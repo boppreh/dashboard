@@ -11,8 +11,8 @@ workspace = load_workspace()
 def index():
     projects = sorted(({'name': project.name,
                        'package': project.package,
-                       #'problems': map_problems(project),
-                       'problems': {},
+                       'problems': map_problems(project),
+                       #'problems': {},
                        'icon': get_icon(project),
                        'language': project.language,
                        'active': project.active,

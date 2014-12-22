@@ -34,7 +34,5 @@ def get_icon(project):
 
 def load_workspace():
     workspace = Workspace(r'..\\', r'..\go\src\github.com\boppreh')
-    # Preload list of problems.
-    workspace.problems
     return workspace
 
